@@ -1,0 +1,181 @@
+[build-system]
+requires = ["setuptools>=80.9", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "smart-feed"
+version = "0.1.0"
+description = "real-time knowledge-augmented chatbot for technical feed"
+authors = [
+  { name = "Alireza Nazari", email = "alireza.nazari.programming@gmail.com" },
+  { name = "Masoud Mohararzadeh", email = "masuodmohararzadeh@gmail.com" },
+  { name = "Amin Haeri", email = "amin.haeri.work@gmail.com" },
+]
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.8"
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.12.8",
+  "pre-commit>=4.2.0",
+  "pytest>=8.4.1",
+  "pytest-cov>=6.2.1",
+  "commitizen>=4.8.3",
+]
+
+
+[tool.ruff]
+target-version = "py311"
+line-length = 79
+extend-exclude = [
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".git-rewrite",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".pytype",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
+]
+
+[tool.ruff.lint]
+select = [
+  "E",   # pycodestyle errors
+  "W",   # pycodestyle warnings
+  "F",   # pyflakes
+  "I",   # isort
+  "UP",  # pyupgrade
+  "N",   # pep8-naming
+  "RUF", # ruff-specific rules
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "ARG", # flake8-unused-arguments
+  "COM", # flake8-commas
+  "T20", # flake8-print
+  "SIM", # flake8-simplify
+  "PIE", # flake8-pie
+]
+ignore = [
+  "W191",   # indentation contains tabs
+  "COM812", # checks for the absence of trailing commas
+]
+fixable = ["ALL"]
+unfixable = []
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**/*" = ["T20", "ARG"]
+"__init__.py" = ["F401"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.pytest.ini_options]
+minversion = "8.4.1"
+addopts = "-ra -q --cov=src"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*", "*/test_*"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "def __repr__",
+  "if self.debug:",
+  "if settings.DEBUG",
+  "raise AssertionError",
+  "raise NotImplementedError",
+  "if 0:",
+  "if __name__ == .__main__.:",
+  "class .*\\bProtocol\\):",
+  "@(abc\\.)?abstractmethod",
+]
+show_missing = true
+skip_covered = false
+
+
+[tool.commitizen]
+name = "cz_customize"
+
+[tool.commitizen.customize]
+message_template = """[task#{{task_id}}] {{change_type}}{% if scope %}({{scope}}){% endif %}: {{subject}}{% if body %}
+
+{{body}}
+{% endif %}
+"""
+example = """[task#1234] feat: add user authentication
+
+Implement JWT-based authentication system with login and logout functionality.
+Added middleware for protected routes and user session management.
+"""
+schema = """
+[task#<task-id>] <change-type>(<scope>): <subject>
+
+<body>
+"""
+schema_pattern = "^((\\[task#\\d+\\]\\s)(build|ci|docs|feat|fix|perf|refactor|style|test|chore)|(chore))(\\(.+\\))?(!)?:(\\s.*)"
+
+
+[[tool.commitizen.customize.questions]]
+type = "list"
+name = "change_type"
+choices = [
+  { value = "feat", name = "feat: A new feature" },
+  { value = "fix", name = "fix: A bug fix" },
+  { value = "docs", name = "docs: Documentation only changes" },
+  { value = "style", name = "style: Changes that do not affect the meaning of the code" },
+  { value = "refactor", name = "refactor: A code change that neither fixes a bug nor adds a feature" },
+  { value = "perf", name = "perf: A code change that improves performance" },
+  { value = "test", name = "test: Adding missing tests or correcting existing tests" },
+  { value = "build", name = "build: Changes that affect the build system or external dependencies" },
+  { value = "ci", name = "ci: Changes to our CI configuration files and scripts" },
+  { value = "chore", name = "chore: Other changes that don't modify src or test files" },
+]
+message = "Select the type of change you are committing"
+
+[[tool.commitizen.customize.questions]]
+type = "input"
+name = "task_id"
+message = "Enter task number (just the number)"
+
+[[tool.commitizen.customize.questions]]
+type = "input"
+name = "subject"
+message = "Write a short description of the change"
+
+[[tool.commitizen.customize.questions]]
+type = "input"
+name = "body"
+message = "Provide additional contextual information (detailed description)"
+multiline = true
